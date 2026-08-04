@@ -247,3 +247,10 @@ app_license = "mit"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+
+app_logo_url = "/files/WhatsApp%20Image%202026-06-28%20at%2018.27.08.jpeg"
+website_context = {"splash_image": "/files/WhatsApp%20Image%202026-06-28%20at%2018.27.08.jpeg"}
+
+
+web_include_css = "/files/agropeople_home.css"
+
