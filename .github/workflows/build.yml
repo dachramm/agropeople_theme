@@ -12,24 +12,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Checkout apps.json
-        uses: actions/checkout@v4
-        with:
-          path: repo
-
-      - name: Encode apps.json
-        id: enc
-        run: |
-          test -s repo/apps.json || { echo "apps.json ausente"; exit 1; }
-          cat repo/apps.json
-          echo "v=$(base64 -w 0 repo/apps.json)" >> $GITHUB_OUTPUT
-
-      - name: Checkout frappe_docker
-        uses: actions/checkout@v4
-        with:
-          repository: frappe/frappe_docker
-          ref: main
-          clean: false
+      - uses: actions/checkout@v4
 
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -42,10 +25,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: images/layered/Containerfile
+          file: Containerfile
           push: true
-          tags: ghcr.io/dachramm/agropeople-erpnext:v16.34.2
-          build-args: |
-            FRAPPE_PATH=https://github.com/frappe/frappe
-            FRAPPE_BRANCH=version-16
-            APPS_JSON_BASE64=${{ steps.enc.outputs.v }}
+          tags: ghcr.io/dachramm/agropeople-erpnext:v16.34.2-agp.1
