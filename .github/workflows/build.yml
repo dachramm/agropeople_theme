@@ -18,10 +18,11 @@ jobs:
           path: repo
 
       - name: Encode apps.json
+        id: enc
         run: |
           test -s repo/apps.json || { echo "apps.json ausente"; exit 1; }
           cat repo/apps.json
-          echo "APPS_JSON_BASE64=$(base64 -w 0 repo/apps.json)" >> $GITHUB_ENV
+          echo "v=$(base64 -w 0 repo/apps.json)" >> $GITHUB_OUTPUT
 
       - name: Checkout frappe_docker
         uses: actions/checkout@v4
@@ -47,4 +48,4 @@ jobs:
           build-args: |
             FRAPPE_PATH=https://github.com/frappe/frappe
             FRAPPE_BRANCH=version-16
-            APPS_JSON_BASE64=${{ env.APPS_JSON_BASE64 }}
+            APPS_JSON_BASE64=${{ steps.enc.outputs.v }}
