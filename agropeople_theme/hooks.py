@@ -254,3 +254,7 @@ website_context = {"splash_image": "/files/WhatsApp%20Image%202026-06-28%20at%20
 
 web_include_css = "/files/agropeople_home.css"
 
+
+app_logo_url = "/assets/agropeople_theme/images/logo.jpeg"
+website_context = {"splash_image": "/assets/agropeople_theme/images/logo.jpeg"}
+web_include_css = "/assets/agropeople_theme/css/agropeople_home.css"
