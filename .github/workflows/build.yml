@@ -12,19 +12,23 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Checkout frappe_docker
-        uses: actions/checkout@v4
-        with:
-          repository: frappe/frappe_docker
-          ref: main
-
       - name: Checkout apps.json
         uses: actions/checkout@v4
         with:
           path: repo
 
       - name: Encode apps.json
-        run: echo "APPS_JSON_BASE64=$(base64 -w 0 repo/apps.json)" >> $GITHUB_ENV
+        run: |
+          test -s repo/apps.json || { echo "apps.json ausente"; exit 1; }
+          cat repo/apps.json
+          echo "APPS_JSON_BASE64=$(base64 -w 0 repo/apps.json)" >> $GITHUB_ENV
+
+      - name: Checkout frappe_docker
+        uses: actions/checkout@v4
+        with:
+          repository: frappe/frappe_docker
+          ref: main
+          clean: false
 
       - name: Login to GHCR
         uses: docker/login-action@v3
