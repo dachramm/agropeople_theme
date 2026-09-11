@@ -1,0 +1,46 @@
+name: build-image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout frappe_docker
+        uses: actions/checkout@v4
+        with:
+          repository: frappe/frappe_docker
+          ref: main
+
+      - name: Checkout apps.json
+        uses: actions/checkout@v4
+        with:
+          path: repo
+
+      - name: Encode apps.json
+        run: echo "APPS_JSON_BASE64=$(base64 -w 0 repo/apps.json)" >> $GITHUB_ENV
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: images/layered/Containerfile
+          push: true
+          tags: ghcr.io/dachramm/agropeople-erpnext:v16.34.2
+          build-args: |
+            FRAPPE_PATH=https://github.com/frappe/frappe
+            FRAPPE_BRANCH=version-16
+            APPS_JSON_BASE64=${{ env.APPS_JSON_BASE64 }}
